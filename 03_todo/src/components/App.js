@@ -2,6 +2,7 @@ import React from 'react';
 import Form from './Form';
 import Todo from './Todo';
 
+let currentId = 0;
 
 //class component
 class App extends React.Component {
@@ -18,7 +19,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <Form />
+        <Form onSubmit={this.handleSubmit} />
         <label>
           <input type="checkbox" />
           全て完了にする
@@ -41,6 +42,17 @@ class App extends React.Component {
         <button>完了済みを全て削除</button>
       </div>
     );
+  }
+
+
+  handleSubmit = text => {
+    const newTodo = {
+      id: currentId,
+      text,
+    }
+    const newTodos = [...this.state.todos, newTodo]
+    this.setState({ todos: newTodos })
+    currentId++;
   }
 }
 

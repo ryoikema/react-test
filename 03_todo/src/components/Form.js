@@ -28,6 +28,7 @@ class Form extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
+    this.props.onSubmit(this.state.input)
     this.setState({ input: "" })
   }
 
