@@ -28,6 +28,8 @@ class Form extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault()
+    //入力値がなかったらreturnで終わらせる
+    if (!this.state.input) return
     this.props.onSubmit(this.state.input)
     this.setState({ input: "" })
   }

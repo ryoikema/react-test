@@ -3,6 +3,7 @@ import Form from './Form';
 import Todo from './Todo';
 import CheckAll from './CheckAll';
 import Filter from './Filter';
+import EditTodo from './EditTodo';
 
 let currentId = 0;
 
@@ -47,15 +48,24 @@ class App extends React.Component {
         <Filter filter={filter} onChange={this.handleChangeFilter} />
 
         <ul>
-          {filteredTodos.map(({ id, text, completed }) => (
+          {filteredTodos.map(({ id, text, completed, editing }) => (
             <li key={id}>
-              <Todo
-                id={id}
-                text={text}
-                completed={completed}
-                onChange={this.handleChangeCompleted}
-                onDelete={this.handleClickDelete}
-              />
+              {editing ? (
+                <EditTodo
+                  id={id} text={text}
+                  onCancel={this.handleChangeTodoAttribute}
+                  onSubmit={this.handleUpdateTodoText}
+                />
+              ) : (
+                  <Todo
+                    id={id}
+                    text={text}
+                    completed={completed}
+                    onChange={this.handleChangeTodoAttribute}
+                    onDelete={this.handleClickDelete}
+                  />
+                )}
+
             </li>
           ))}
         </ul>
@@ -71,6 +81,7 @@ class App extends React.Component {
       id: currentId,
       text,
       completed: false,
+      editing: false
     }
     const newTodos = [...this.state.todos, newTodo]
     this.setState({ todos: newTodos })
@@ -85,12 +96,12 @@ class App extends React.Component {
     this.setState({ todos: newTodos })
   }
 
-  handleChangeCompleted = (id, completed) => {
+  handleChangeTodoAttribute = (id, key, value) => {
     const newTodos = this.state.todos.map(todo => {
       if (todo.id === id) {
         return {
           ...todo,
-          completed: completed
+          [key]: value
         }
       }
       return todo
@@ -102,6 +113,22 @@ class App extends React.Component {
   handleChangeFilter = filter => {
     this.setState({ filter })
   }
+
+  //編集-更新機能
+  handleUpdateTodoText = (id, text) => {
+    const newTodos = this.state.todos.map(todo => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          text,
+          editing: false,
+        }
+      }
+      return todo
+    })
+    this.setState({ todos: newTodos })
+  }
+
   //削除機能
   handleClickDelete = id => {
     const newTodos = this.state.todos.filter(todo => todo.id !== id)
