@@ -9,17 +9,26 @@ class Form extends React.Component {
   }
   render() {
     return (
-      <form>
-        <input type="text" value={this.state.value} onChange={this.handleChange} />
+      <form onSubmit={this.handleSubmit}>
+        <input
+          type="text"
+          value={this.state.input}
+          onChange={this.handleChange}
+        />
         <button>追加</button>
       </form>
     )
   }
-
+  //inputの入力内容
   handleChange = e => {
     this.setState({ input: e.currentTarget.value })
-  }
-
+  };
+  //送信したらinputの内容を空にする
+  handleSubmit = e => {
+    e.preventDefault();
+    this.props.onSubmit(this.state.input)
+    this.setState({ input: "" });
+  };
 }
 
 
