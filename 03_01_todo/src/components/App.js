@@ -56,6 +56,7 @@ class App extends React.Component {
                 <EditTodo
                   id={id} text={text}
                   onCancel={this.handleChangeTodoAttribute}
+                  onSubmit={this.handleUpdateTodoText}
                 />
               ) : (
                   <Todo
@@ -116,6 +117,21 @@ class App extends React.Component {
         }
       }
       return todo
+    })
+    this.setState({ todos: newTodos })
+  }
+
+  //編集の更新機能
+  handleUpdateTodoText = (id, text) => {
+    const newTodos = this.state.todos.map(todo => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          text,
+          editing: false
+        }
+      }
+      return todo;
     })
     this.setState({ todos: newTodos })
   }

@@ -19,6 +19,7 @@ class EditTodo extends React.Component {
           onChange={this.handleChange}
         />
         <button onClick={this.handleClickCancel}>キャンンセル</button>
+        <button onClick={this.handleSubmit}>更新</button>
       </div>
     )
   }
@@ -30,6 +31,12 @@ class EditTodo extends React.Component {
   handleClickCancel = () => {
     const { onCancel, id } = this.props
     onCancel(id, 'editing', false)
+  }
+
+  handleSubmit = () => {
+    const { onSubmit, id } = this.props
+    if (!this.props.text) return
+    onSubmit(id, this.state.text)
   }
 
 }
