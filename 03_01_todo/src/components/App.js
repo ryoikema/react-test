@@ -23,16 +23,16 @@ class App extends React.Component {
       switch (filter) {
         case 'all':
           return true
-          break;
+
         case 'uncompleted':
           return !completed
-          break;
+
         case 'completed':
           return completed
-          break;
+
         default:
           return true
-          break;
+
       }
     })
 
@@ -54,6 +54,7 @@ class App extends React.Component {
                 text={text}
                 completed={completed}
                 onChange={this.handleChangeCompleted}
+                onDelete={this.handleClickDelete}
               />
             </li>
           )}
@@ -105,6 +106,14 @@ class App extends React.Component {
     })
     this.setState({ todos: newTodos })
   }
+
+  //個別Todoの削除機能 渡したidのTodoだけ除外した新たな配列が作られる
+  handleClickDelete = id => {
+    const newTodos = this.state.todos.filter(todo => todo.id !== id)
+    this.setState({ todos: newTodos });
+
+  }
+
 
   //completedが未完了のものだけが newTodosに入る
   handleClickDeleteCompleted = () => {
