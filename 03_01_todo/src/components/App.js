@@ -1,8 +1,10 @@
 import React from 'react';
 import Form from './Form';
 import Todo from './Todo';
+import EditTodo from './EditTodo';
 import CheckAll from './CheckAll';
 import Filter from './Filter';
+
 
 let currentId = 0;
 
@@ -47,17 +49,27 @@ class App extends React.Component {
         <Filter filter={filter} onChange={this.handleChangeFilter} />
 
         <ul>
-          {filteredTodos.map(({ id, text, completed }) =>
+          {filteredTodos.map(({ id, text, completed, editing }) => (
             <li key={id}>
-              <Todo
-                id={id}
-                text={text}
-                completed={completed}
-                onChange={this.handleChangeCompleted}
-                onDelete={this.handleClickDelete}
-              />
+              {/* コンポーネントの出し分け */}
+              {editing ? (
+                <EditTodo
+                  id={id} text={text}
+                  onCancel={this.handleChangeTodoAttribute}
+                />
+              ) : (
+                  <Todo
+                    id={id}
+                    text={text}
+                    completed={completed}
+                    onChange={this.handleChangeTodoAttribute}
+                    onDelete={this.handleClickDelete}
+                  />
+                )
+              }
+
             </li>
-          )}
+          ))}
         </ul>
 
         <button onClick={this.handleClickDeleteCompleted}>完了済みを全て削除</button>
@@ -72,6 +84,7 @@ class App extends React.Component {
       id: currentId,
       text,
       completed: false,
+      editing: false,
     }
     const newTodos = [...this.state.todos, newTodo]
     this.setState({ todos: newTodos })
@@ -94,12 +107,12 @@ class App extends React.Component {
   }
 
   //Todoの完了状態を変更できるようにする　チェックボックス
-  handleChangeCompleted = (id, completed) => {
+  handleChangeTodoAttribute = (id, key, value) => {
     const newTodos = this.state.todos.map(todo => {
       if (todo.id === id) {
         return {
           ...todo,
-          completed,
+          [key]: value,
         }
       }
       return todo

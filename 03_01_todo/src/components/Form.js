@@ -26,6 +26,7 @@ class Form extends React.Component {
   //送信したらinputの内容を空にする
   handleSubmit = e => {
     e.preventDefault();
+    if (!this.state.input) return
     this.props.onSubmit(this.state.input)
     this.setState({ input: "" });
   };
