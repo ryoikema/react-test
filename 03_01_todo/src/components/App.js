@@ -1,6 +1,8 @@
 import React from 'react';
 import Form from './Form';
 import Todo from './Todo';
+import CheckAll from './CheckAll';
+import Filter from './Filter';
 
 let currentId = 0;
 
@@ -8,29 +10,44 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      filter: 'all',
       todos: []
     }
   }
 
 
   render() {
+    const { todos, filter } = this.state
+    //filterされたTodosを作る completedの状態とfilterの状態がなにかによって切り分ける
+    const filteredTodos = todos.filter(({ completed }) => {
+      switch (filter) {
+        case 'all':
+          return true
+          break;
+        case 'uncompleted':
+          return !completed
+          break;
+        case 'completed':
+          return completed
+          break;
+        default:
+          return true
+          break;
+      }
+    })
+
     return (
       <div>
         <Form onSubmit={this.handleSubmit} />
 
-        <label>
-          <input type="checkbox" />
-          全て完了にする
-          </label>
+        <CheckAll allCompleted={todos.length > 0 && todos.every(({ completed }) => completed)}
+          onChange={this.handleChangeAllCompleted}
+        />
 
-        <select>
-          <option>全て</option>
-          <option>未完了</option>
-          <option>完了済み</option>
-        </select>
+        <Filter filter={filter} onChange={this.handleChangeFilter} />
 
         <ul>
-          {this.state.todos.map(({ id, text, completed }) =>
+          {filteredTodos.map(({ id, text, completed }) =>
             <li key={id}>
               <Todo
                 id={id}
@@ -42,7 +59,7 @@ class App extends React.Component {
           )}
         </ul>
 
-        <button>完了済みを全て削除</button>
+        <button onClick={this.handleClickDeleteCompleted}>完了済みを全て削除</button>
 
       </div>
     );
@@ -59,6 +76,22 @@ class App extends React.Component {
     this.setState({ todos: newTodos })
     currentId++;
   }
+
+  handleChangeAllCompleted = completed => {
+    const newTodos = this.state.todos.map(todo => ({
+
+      ...todo,
+      completed
+
+    }))
+    this.setState({ todos: newTodos })
+  }
+
+  //全て、未完了、完了済み
+  handleChangeFilter = filter => {
+    this.setState({ filter })
+  }
+
   //Todoの完了状態を変更できるようにする　チェックボックス
   handleChangeCompleted = (id, completed) => {
     const newTodos = this.state.todos.map(todo => {
@@ -70,6 +103,12 @@ class App extends React.Component {
       }
       return todo
     })
+    this.setState({ todos: newTodos })
+  }
+
+  //completedが未完了のものだけが newTodosに入る
+  handleClickDeleteCompleted = () => {
+    const newTodos = this.state.todos.filter(({ completed }) => !completed)
     this.setState({ todos: newTodos })
   }
 }
